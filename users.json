@@ -1,0 +1,8 @@
+{
+    "users": [
+        {
+            "user1@example.com": [{"password":"cevarosu","isadmin":"False"}],
+            "admin@example.com": [{"password":"admin","isadmin":"True"}]
+        }
+    ]
+}

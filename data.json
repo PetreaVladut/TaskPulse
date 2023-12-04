@@ -1,0 +1,179 @@
+{
+    "task": [
+        {
+            "deadline": "2023-12-31",
+            "description": "Sample task 1",
+            "difficulty": "Easy",
+            "status": "Planned",
+            "tags": "Tag1,Tag2",
+            "task_id": 1,
+            "title": "Task 1",
+            "user_id": 1
+        },
+        {
+            "deadline": "2023-12-15",
+            "description": "Sample task 2",
+            "difficulty": "Medium",
+            "status": "Done",
+            "tags": "Tag3",
+            "task_id": 2,
+            "title": "Task 2",
+            "user_id": 1
+        },
+        {
+            "deadline": "2023-12-20",
+            "description": "Sample task 3",
+            "difficulty": "Hard",
+            "status": "Planned",
+            "tags": "Tag4",
+            "task_id": 3,
+            "title": "Task 3",
+            "user_id": 3
+        },
+        {
+            "deadline": "2023-11-30",
+            "description": "Another task",
+            "difficulty": "Easy",
+            "status": "Done",
+            "tags": "Tag5",
+            "task_id": 4,
+            "title": "Task 4",
+            "user_id": 2
+        },
+        {
+            "deadline": "2024-01-10",
+            "description": "Important task",
+            "difficulty": "Medium",
+            "status": "Done",
+            "tags": "Tag1,Tag6",
+            "task_id": 5,
+            "title": "Task 5",
+            "user_id": 5
+        },
+        {
+            "deadline": "2023-12-05",
+            "description": "Urgent task",
+            "difficulty": "Hard",
+            "status": "In Progress",
+            "tags": "Tag7",
+            "task_id": 6,
+            "title": "Task 6",
+            "user_id": 6
+        },
+        {
+            "deadline": "2023-11-25",
+            "description": "Task for Bob",
+            "difficulty": "Easy",
+            "status": "Done",
+            "tags": "Tag8",
+            "task_id": 7,
+            "title": "Task for Bob",
+            "user_id": 7
+        }
+    ],
+    "team": [
+        {
+            "description": "Sample team A",
+            "name": "Team A",
+            "team_id": 1
+        },
+        {
+            "description": "Sample team B",
+            "name": "Team B",
+            "team_id": 2
+        },
+        {
+            "description": "Development Team",
+            "name": "Development",
+            "team_id": 3
+        },
+        {
+            "description": "Customer Support Team",
+            "name": "Support",
+            "team_id": 4
+        }
+    ],
+    "user": [
+        {
+            "email": "user@example.com",
+            "user_id": 0,
+            "username": "no_asignee"
+        },
+        {
+            "email": "user1@example.com",
+            "image": "images/profile.jpg",
+            "user_id": 1,
+            "username": "user1"
+        },
+        {
+            "email": "user2@example.com",
+            "image": "images/profile2.jpg",
+            "user_id": 2,
+            "username": "user2"
+        },
+        {
+            "email": "user3@example.com",
+            "image": "images/profile2.jpg",
+            "user_id": 3,
+            "username": "user3"
+        },
+        {
+            "email": "johndoe@example.com",
+            "image": "images/profile2.jpg",
+            "user_id": 4,
+            "username": "johndoe"
+        },
+        {
+            "email": "janedoe@example.com",
+            "image": "images/profile2.jpg",
+            "user_id": 5,
+            "username": "janedoe"
+        },
+        {
+            "email": "alice@example.com",
+            "image": "images/profile2.jpg",
+            "user_id": 6,
+            "username": "alice"
+        },
+        {
+            "email": "bob@example.com",
+            "image": "images/profile2.jpg",
+            "user_id": 7,
+            "username": "bob"
+        }
+    ],
+    "user_team": [
+        {
+            "team_id": 1,
+            "user_id": 1
+        },
+        {
+            "team_id": 1,
+            "user_id": 2
+        },
+        {
+            "team_id": 2,
+            "user_id": 2
+        },
+        {
+            "team_id": 2,
+            "user_id": 3
+        },
+        {
+            "team_id": 3,
+            "user_id": 4
+        },
+        {
+            "team_id": 3,
+            "user_id": 5
+        },
+        {
+            "team_id": 4,
+            "user_id": 6
+        },
+        {
+            "team_id": 4,
+            "user_id": 7
+        }
+    ]
+}

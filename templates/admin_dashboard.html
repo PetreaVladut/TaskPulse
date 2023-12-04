@@ -38,7 +38,7 @@
           <div class="profile-info">
             <h2>John Doe</h2>
             <p>Email: {{ user_email }}</p>
-            <p>Team: Development</p>
+            <p>Team: {{ team }}</p>
             <div class="experience-bar">
               <div class="experience-fill" style="width: 70%"></div>
               <!-- Adjust the width based on experience points -->
@@ -49,9 +49,9 @@
         <button class="profile-button">Achievments</button>
         <div class="team-members">
           <h3>Team Members</h3>
-          <div class="team-member">John Doe</div>
-          <div class="team-member">Jane Smith</div>
-          <!-- Add more team members as needed -->
+          {% for members in cur_members %}
+          <div class="team-member">{{members}}</div>
+          {% endfor %}
         </div>
       </aside>
       <main class="project">
@@ -68,6 +68,7 @@
           <div class="project-column" data-status="Planned">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">Task Planned</h2>
+              <button class="add-task-button">+</button>
             </div>
             {% for task in tasks_planned %}
             <div
@@ -79,9 +80,16 @@
               <div class="task__tags">
                 <span class="task__tag task__tag--illustration"
                   >{{ task.tag }}</span
-                ><button class="task__options">
-                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                </button>
+                >
+                <div class="dropdown">
+                  <button class="task__options">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <div class="dropdown-content">
+                    <button onclick="editFunction()">Edit</button>
+                    <button onclick="deleteFunction()">Delete</button>
+                  </div>
+                </div>
               </div>
               <h3>{{ task.title }}</h3>
               <p>{{ task.description }}</p>
@@ -94,7 +102,13 @@
                 <span>{{ users[task.user_id].username }}</span>
                 <div class="task__owner">
                   {% if task.user_id == 0 %}
-                  <button class="assign-button" data-task-id="{{ task.task_id }}" asignee="{{username}}">+</button>
+                  <button
+                    class="assign-button"
+                    data-task-id="{{ task.task_id }}"
+                    asignee="{{username}}"
+                  >
+                    +
+                  </button>
                   {% elif task.user_id in users %}
                   <img
                     src="{{ url_for('static', filename=users[task.user_id].image) }}"
@@ -108,6 +122,7 @@
           <div class="project-column" data-status="In Progress">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">In Progress</h2>
+              <a href="/task/add" class="add-task-button">+</a>
             </div>
 
             {% for task in tasks_in_progress %}
@@ -135,7 +150,12 @@
                 <span>{{ users[task.user_id].username }}</span>
                 <div class="task__owner">
                   {% if task.user_id == 0 %}
-                  <button class="assign-button" data-task-id="{{ task.task_id }}">+</button>
+                  <button
+                    class="assign-button"
+                    data-task-id="{{ task.task_id }}"
+                  >
+                    +
+                  </button>
                   {% elif task.user_id in users %}
                   <img
                     src="{{ url_for('static', filename=users[task.user_id].image) }}"
@@ -149,6 +169,7 @@
           <div class="project-column" data-status="Needs Review">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">Needs Review</h2>
+              <button class="add-task-button">+</button>
             </div>
 
             {% for task in tasks_needs_review %}
@@ -176,7 +197,12 @@
                 <span>{{ users[task.user_id].username }}</span>
                 <div class="task__owner">
                   {% if task.user_id == 0 %}
-                  <button class="assign-button" data-task-id="{{ task.task_id }}">+</button>
+                  <button
+                    class="assign-button"
+                    data-task-id="{{ task.task_id }}"
+                  >
+                    +
+                  </button>
                   {% elif task.user_id in users %}
                   <img
                     src="{{ url_for('static', filename=users[task.user_id].image) }}"
@@ -190,6 +216,7 @@
           <div class="project-column" data-status="Done">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">Done</h2>
+              <button class="add-task-button">+</button>
             </div>
 
             {% for task in tasks_done %}
@@ -217,7 +244,12 @@
                 <span>{{ users[task.user_id].username }}</span>
                 <div class="task__owner">
                   {% if task.user_id == 0 %}
-                  <button class="assign-button" data-task-id="{{ task.task_id }}">+</button>
+                  <button
+                    class="assign-button"
+                    data-task-id="{{ task.task_id }}"
+                  >
+                    +
+                  </button>
                   {% elif task.user_id in users %}
                   <img
                     src="{{ url_for('static', filename=users[task.user_id].image) }}"
