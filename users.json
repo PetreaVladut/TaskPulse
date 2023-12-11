@@ -2,7 +2,8 @@
     "users": [
         {
             "user1@example.com": [{"password":"cevarosu","isadmin":"False"}],
-            "admin@example.com": [{"password":"admin","isadmin":"True"}]
+            "admin@example.com": [{"password":"admin","isadmin":"True"}],
+            "janedoe@example.com": [{"password":"jane123","isadmin":"False"}]
         }
     ]
 }

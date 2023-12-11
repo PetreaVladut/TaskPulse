@@ -1,199 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Management Dashboard</title>
-
-    <!-- Link to your CSS file -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Task</title>
     <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/stiluri.css') }}"
-    />
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/stiluri_add.css') }}"
+  />
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Task</h1>
+    <form method="POST" action="{{ url_for('edit_task', task_id=task.task_id) }}">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" value="{{ task.title }}" required><br><br>
+  
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required>{{ task.description }}</textarea><br><br>
+  
+      <label for="status">Status:</label>
+      <select id="status" name="status" required>
+          <option value="Planned" {% if task.status == 'Planned' %}selected{% endif %}>Planned</option>
+          <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+          <option value="Done" {% if task.status == 'Done' %}selected{% endif %}>Done</option>
+      </select><br><br>
+  
+      <label for="user_id">User ID:</label>
+      <input type="number" id="user_id" name="user_id" value="{{ task.user_id }}" required><br><br>
+  
+      <label for="difficulty">Difficulty:</label>
+      <input type="text" id="difficulty" name="difficulty" value="{{ task.difficulty }}" required><br><br>
 
-    <!-- Add any other meta tags or link tags as needed -->
-  </head>
-  <body>
-    <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
-    <div class="app">
-      <aside class="sidebar">
-        <div class="profile-container">
-          <img
-            src="{{ url_for('static', filename='images/profile.jpg') }}"
-            alt="Profile Photo"
-            class="profile-image"
-          />
-          <div class="profile-info">
-            <h2>John Doe</h2>
-            <p>Email: john.doe@example.com</p>
-            <p>Team: Development</p>
-            <div class="experience-bar">
-              <div class="experience-fill" style="width: 70%"></div>
-              <!-- Adjust the width based on experience points -->
-            </div>
-            <div class="experience-label">Veteran: 70%</div>
-          </div>
-        </div>
-        <button class="profile-button">Achievments</button>
-        <div class="team-members">
-          <h3>Team Members</h3>
-          <div class="team-member">John Doe</div>
-          <div class="team-member">Jane Smith</div>
-          <!-- Add more team members as needed -->
-        </div>
-      </aside>
-      <main class="project">
-        <div class="project-info">
-          <h1>Homepage Design</h1>
-          <div class="project-participants">
-            <span></span>
-            <span></span>
-            <span></span>
-            <button class="project-participants__add">Add Participant</button>
-          </div>
-        </div>
-        <div class="project-tasks">
-          <div class="project-column">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">Task Ready</h2>
-              <button class="project-column-heading__options">
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <button class="add-task-button">+</button>
-            </div>
-            {% for task in tasks %}
-            <div class="task_ready">
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <!-- Add more fields as needed -->
-            </div>
-            {% endfor %}
-          </div>
-          <div class="project-column">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">In Progress</h2>
-              <button class="project-column-heading__options">
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <button class="add-task-button">+</button>
-            </div>
-
-            {% for task in tasks %}
-            <div class="task_progress">
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <!-- Add more fields as needed -->
-            </div>
-            {% endfor %}
-          </div>
-          <div class="project-column">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">Needs Review</h2>
-              <button class="project-column-heading__options">
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <button class="add-task-button">+</button>
-            </div>
-
-            {% for task in tasks %}
-            <div class="task_review">
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <!-- Add more fields as needed -->
-            </div>
-            {% endfor %}
-          </div>
-          <div class="project-column">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">Done</h2>
-              <button class="project-column-heading__options">
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <button class="add-task-button">+</button>
-            </div>
-
-            {% for task in tasks %}
-            <div class="task_done">
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <!-- Add more fields as needed -->
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </main>
-      <aside class="task-details">
-        <div class="tag-progress">
-          <h2>Task Progress</h2>
-          <div class="tag-progress">
-            <p>Copywriting <span>3/8</span></p>
-            <progress class="progress progress--copyright" max="8" value="3">
-              3
-            </progress>
-          </div>
-          <div class="tag-progress">
-            <p>Illustration <span>6/10</span></p>
-            <progress
-              class="progress progress--illustration"
-              max="10"
-              value="6"
-            >
-              6
-            </progress>
-          </div>
-          <div class="tag-progress">
-            <p>UI Design <span>2/7</span></p>
-            <progress class="progress progress--design" max="7" value="2">
-              2
-            </progress>
-          </div>
-        </div>
-        <div class="task-activity">
-          <h2>Recent Activity</h2>
-          <ul>
-            <li>
-              <span class="task-icon task-icon--attachment"
-                ><i class="fas fa-paperclip"></i
-              ></span>
-              <b>Andrea </b>uploaded 3 documents
-              <time datetime="2021-11-24T20:00:00">Aug 10</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--comment"
-                ><i class="fas fa-comment"></i
-              ></span>
-              <b>Karen </b> left a comment
-              <time datetime="2021-11-24T20:00:00">Aug 10</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--edit"
-                ><i class="fas fa-pencil-alt"></i
-              ></span>
-              <b>Karen </b>uploaded 3 documents
-              <time datetime="2021-11-24T20:00:00">Aug 11</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--attachment"
-                ><i class="fas fa-paperclip"></i
-              ></span>
-              <b>Andrea </b>uploaded 3 documents
-              <time datetime="2021-11-24T20:00:00">Aug 11</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--comment"
-                ><i class="fas fa-comment"></i
-              ></span>
-              <b>Karen </b> left a comment
-              <time datetime="2021-11-24T20:00:00">Aug 12</time>
-            </li>
-          </ul>
-        </div>
-      </aside>
-    </div>
-
-    <!-- Link to your JS file -->
+      <label for="deadline">deadline:</label>
+      <input type="text" id="deadline" name="deadline" value="{{ task.deadline }}" required><br><br>
+  
+      <button type="submit">Save Changes</button>
+  </form>
+</div>
     <script src="{{ url_for('static', filename='js/back.js') }}"></script>
-
-    <!-- Add any other script tags as needed -->
-  </body>
+</body>
 </html>

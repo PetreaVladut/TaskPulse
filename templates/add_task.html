@@ -4,55 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Task</title>
-    <link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/stiluri_add.css') }}"
-  />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stiluri_add.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>Add New Task</h1>
-    <form method="POST" action="/task/add">
-        <div class="form-group">
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="title" required>
-        </div>
+    <div class="container">
+        <h1>Add New Task</h1>
+        <form method="POST" action="/task/add">
+            <!-- Title -->
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
 
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea>
-        </div>
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
 
-        <div class="form-group">
-            <label for="status">Status:</label>
-            <select id="status" name="status" required>
-                <option value="Planned">Planned</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Needs Review">Needs Review</option>
-                <option value="Done">Done</option>
-            </select>
-        </div>
+            <!-- Status -->
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option value="Planned">Planned</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Needs Review">Needs Review</option>
+                    <option value="Done">Done</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-          <label for="tags">Tags (comma-separated):</label>
-          <input type="text" id="tags" name="tags" onkeyup="updateTags()">
-          <div id="tags-container" style="margin-top: 10px;"></div>
-      </div>
+            <!-- Tags -->
+            <div class="form-group">
+                <label for="tags">Tags (comma-separated):</label>
+                <input type="text" id="tags" name="tags" onkeyup="updateTags()">
+                <div id="tags-container" style="margin-top: 10px;"></div>
+            </div>
 
-        <div class="form-group">
-            <label for="assign">Assign to:</label>
-            <select id="assign" name="assign">
-                <option value="">None</option>
-                <!-- Dynamically populate this list with team members -->
-                <option value="member1">Member 1</option>
-                <option value="member2">Member 2</option>
-                <!-- More members here -->
-            </select>
-        </div>
+            <!-- Assignee -->
+            <div class="form-group">
+                <label for="assign">Assign to:</label>
+                <select id="assign" name="assign">
+                    <option value="">None</option>
+                    {% for user in users %}
+                        <option value="{{ user.user_id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <button type="submit" class="add-task-button">Add Task</button>
-    </form>
-</div>
+            <!-- Deadline -->
+            <div class="form-group">
+                <label for="deadline">Deadline:</label>
+                <input type="date" id="deadline" name="deadline" required>
+            </div>
+
+            <!-- Difficulty -->
+            <div class="form-group">
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty" name="difficulty" required>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="add-task-button">Add Task</button>
+        </form>
+    </div>
     <script src="{{ url_for('static', filename='js/back.js') }}"></script>
 </body>
 </html>

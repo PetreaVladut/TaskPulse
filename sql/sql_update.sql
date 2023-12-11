@@ -1,0 +1,3 @@
+ALTER TABLE `task`
+ADD COLUMN deadline DATE,
+ADD COLUMN tags VARCHAR(255);

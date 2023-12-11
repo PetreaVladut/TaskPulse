@@ -495,33 +495,109 @@
 .assign-button:hover {
   background-color: #007bff; /* Darker blue color on hover */
 }
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-
-/* Dropdown content (hidden by default) */
-.dropdown-content {
-  display: none;
+.dropdown-menu {
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 160px;
+  min-width: 100px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
   z-index: 1;
 }
 
-/* Style the dropdown items */
-.dropdown-content button {
-  color: black;
-  padding: 12px 16px;
+.dropdown-item {
+  padding: 5px 10px;
   text-decoration: none;
   display: block;
-  border: none;
-  background: none;
-  text-align: left;
+  background-color: #7784ee;
+  color:white;
+  border-radius: 100rem;
+  outline-color: #7784ee;
+  margin-bottom: 10px;
+}
+
+.dropdown-item:hover {
+  background-color: #007bff;
+}
+.dropdown-item:focus,
+.dropdown-item:active {
+  outline: none; /* Remove focus outline */
+  box-shadow: none; /* Remove button shadow on click */
+}
+.delete_member{
+  display: inline-block;
+  margin: 5px;
+  padding: 10px 10px; /* Adjust padding as needed */
+  background-color: transparent; /* Button background color */
+  color: lightgray; /* Text color */
+  border: none; /* Remove button border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Show pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.delete_member:hover{
+background-color: #007bff; /* Adjust the hover color */
+}
+
+.delete_member:focus,
+.delete_member:active {
+  outline: none; /* Remove focus outline */
+  box-shadow: none; /* Remove button shadow on click */
+}
+.add-member{
+  display: inline-block;
+  margin: 10px;
+  padding: 10px 20px; /* Adjust padding as needed */
+  background-color: #7784ee; /* Button background color */
+  color: white; /* Text color */
+  border: none; /* Remove button border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Show pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.add-member:hover{
+background-color: #007bff; /* Adjust the hover color */
+}
+
+.add-memberr:focus,
+.add-member:active {
+  outline: none; /* Remove focus outline */
+  box-shadow: none; /* Remove button shadow on click */
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
   cursor: pointer;
 }
 
-/* Change color of dropdown links on hover */
-.dropdown-content button:hover {background-color: #f1f1f1}
+.title{
+  margin:20px;
+}

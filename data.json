@@ -4,7 +4,7 @@
             "deadline": "2023-12-31",
             "description": "Sample task 1",
             "difficulty": "Easy",
-            "status": "Planned",
+            "status": "In Progress",
             "tags": "Tag1,Tag2",
             "task_id": 1,
             "title": "Task 1",
@@ -54,7 +54,7 @@
             "deadline": "2023-12-05",
             "description": "Urgent task",
             "difficulty": "Hard",
-            "status": "In Progress",
+            "status": "Planned",
             "tags": "Tag7",
             "task_id": 6,
             "title": "Task 6",
@@ -69,6 +69,23 @@
             "task_id": 7,
             "title": "Task for Bob",
             "user_id": 7
+        },
+        {
+            "description": "dawdwad",
+            "difficulty": null,
+            "status": "Needs Review",
+            "task_id": 8,
+            "title": "dawdaw",
+            "user_id": 0
+        },
+        {
+            "deadline": "2023-12-27",
+            "description": "Plan the development",
+            "difficulty": "Easy",
+            "status": "In Progress",
+            "task_id": 9,
+            "title": "Task 5",
+            "user_id": 0
         }
     ],
     "team": [
@@ -95,9 +112,10 @@
     ],
     "user": [
         {
-            "email": "user@example.com",
+            "email": "admin@example.com",
+            "image": "images/profile2.jpg",
             "user_id": 0,
-            "username": "no_asignee"
+            "username": "admin"
         },
         {
             "email": "user1@example.com",
@@ -145,10 +163,6 @@
     "user_team": [
         {
             "team_id": 1,
-            "user_id": 1
-        },
-        {
-            "team_id": 1,
             "user_id": 2
         },
         {
@@ -174,6 +188,14 @@
         {
             "team_id": 4,
             "user_id": 7
+        },
+        {
+            "team_id": 1,
+            "user_id": 3
+        },
+        {
+            "team_id": 1,
+            "user_id": 5
         }
     ]
 }

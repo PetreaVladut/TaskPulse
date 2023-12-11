@@ -29,6 +29,7 @@
     <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
     <div class="app">
       <aside class="sidebar">
+        <h1 class="title">TaskPulse</h1>
         <div class="profile-container">
           <img
             src="{{ url_for('static', filename=user_photo) }}"
@@ -36,9 +37,9 @@
             class="profile-image"
           />
           <div class="profile-info">
-            <h2>John Doe</h2>
+            <h2>{{ user_name }}</h2>
             <p>Email: {{ user_email }}</p>
-            <p>Team: {{ team }}</p>
+            <p>Team: {{ team[0].name }}</p>
             <div class="experience-bar">
               <div class="experience-fill" style="width: 70%"></div>
               <!-- Adjust the width based on experience points -->
@@ -49,9 +50,24 @@
         <button class="profile-button">Achievments</button>
         <div class="team-members">
           <h3>Team Members</h3>
-          {% for members in cur_members %}
-          <div class="team-member">{{members}}</div>
+          {% for member in team_members %}
+          <div class="team-member">
+            {{ member.username }}<button
+              class="delete_member"
+              data-user-id="{{ member.user_id }}"
+              data-team-id="{{ team_id }}"
+            >
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
           {% endfor %}
+          <button
+            id="add-member-btn"
+            data-team-id="{{ team_id }}"
+            class="add-member"
+          >
+            +
+          </button>
         </div>
       </aside>
       <main class="project">
@@ -61,16 +77,16 @@
             <span></span>
             <span></span>
             <span></span>
-            <button class="project-participants__add">Add Participant</button>
+            <button class="project-participants__add">Add Team</button>
           </div>
         </div>
         <div class="project-tasks">
           <div class="project-column" data-status="Planned">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">Task Planned</h2>
-              <button class="add-task-button">+</button>
+              <a href="/task/add" class="add-task-button">+</a>
             </div>
-            {% for task in tasks_planned %}
+            {% for task in tasks['Planned'] %}
             <div
               class="task"
               draggable="true"
@@ -81,13 +97,23 @@
                 <span class="task__tag task__tag--illustration"
                   >{{ task.tag }}</span
                 >
-                <div class="dropdown">
+                <div class="task-options-container">
                   <button class="task__options">
-                    <i class="fa fa-ellipsis-h"></i>
+                    <i class="fa-solid fa-ellipsis"></i>
                   </button>
-                  <div class="dropdown-content">
-                    <button onclick="editFunction()">Edit</button>
-                    <button onclick="deleteFunction()">Delete</button>
+                  <div class="dropdown-menu" style="display: none">
+                    <button
+                      class="dropdown-item"
+                      id="dropdown-item-edit"
+                      data-task-id="{{ task.task_id }}">
+                      <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -125,7 +151,7 @@
               <a href="/task/add" class="add-task-button">+</a>
             </div>
 
-            {% for task in tasks_in_progress %}
+            {% for task in tasks['In Progress'] %}
             <div
               class="task"
               draggable="true"
@@ -134,10 +160,27 @@
             >
               <div class="task__tags">
                 <span class="task__tag task__tag--illustration"
-                  >Illustration</span
-                ><button class="task__options">
-                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                </button>
+                  >Illustration
+                </span>
+                <div class="task-options-container">
+                  <button class="task__options">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </button>
+                  <div class="dropdown-menu" style="display: none">
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                    </button>
+                  </div>
+                </div>
               </div>
               <h3>{{ task.title }}</h3>
               <p>{{ task.description }}</p>
@@ -169,10 +212,10 @@
           <div class="project-column" data-status="Needs Review">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">Needs Review</h2>
-              <button class="add-task-button">+</button>
+              <a href="/task/add" class="add-task-button">+</a>
             </div>
 
-            {% for task in tasks_needs_review %}
+            {% for task in tasks['Needs Review'] %}
             <div
               class="task"
               draggable="true"
@@ -182,9 +225,25 @@
               <div class="task__tags">
                 <span class="task__tag task__tag--illustration"
                   >Illustration</span
-                ><button class="task__options">
-                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                </button>
+                ><div class="task-options-container">
+                  <button class="task__options">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </button>
+                  <div class="dropdown-menu" style="display: none">
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                    </button>
+                  </div>
+                </div>
               </div>
               <h3>{{ task.title }}</h3>
               <p>{{ task.description }}</p>
@@ -216,10 +275,10 @@
           <div class="project-column" data-status="Done">
             <div class="project-column-heading">
               <h2 class="project-column-heading__title">Done</h2>
-              <button class="add-task-button">+</button>
+              <a href="/task/add" class="add-task-button">+</a>
             </div>
 
-            {% for task in tasks_done %}
+            {% for task in tasks['Done'] %}
             <div
               class="task"
               draggable="true"
@@ -229,9 +288,31 @@
               <div class="task__tags">
                 <span class="task__tag task__tag--illustration"
                   >Illustration</span
-                ><button class="task__options">
-                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                </button>
+                ><div class="task-options-container">
+                  <button class="task__options">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </button>
+                  <div class="dropdown-menu" style="display: none">
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                    </button>
+                    <button
+                      class="dropdown-item"
+                      data-task-id="{{ task.task_id }}"
+                    >
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Validate</a>
+                    </button>
+                  </div>
+                </div>
               </div>
               <h3>{{ task.title }}</h3>
               <p>{{ task.description }}</p>
@@ -263,7 +344,7 @@
         </div>
       </main>
       <aside class="task-details">
-        <div class="tag-progress">
+        <!-- <div class="tag-progress">
           <h2>Task Progress</h2>
           <div class="tag-progress">
             <p>Copywriting <span>3/8</span></p>
@@ -287,55 +368,41 @@
               2
             </progress>
           </div>
-        </div>
+        </div> -->
         <div class="task-activity">
           <h2>Recent Activity</h2>
           <ul>
+            {% for log in logs %}
             <li>
               <span class="task-icon task-icon--attachment"
                 ><i class="fas fa-paperclip"></i
               ></span>
-              <b>Andrea </b>uploaded 3 documents
-              <time datetime="2021-11-24T20:00:00">Aug 10</time>
+              <span id="timestamp">{{ log.timestamp }}</span>
+              <span>: {{ log.description }}</span>
             </li>
-            <li>
-              <span class="task-icon task-icon--comment"
-                ><i class="fas fa-comment"></i
-              ></span>
-              <b>Karen </b> left a comment
-              <time datetime="2021-11-24T20:00:00">Aug 10</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--edit"
-                ><i class="fas fa-pencil-alt"></i
-              ></span>
-              <b>Karen </b>uploaded 3 documents
-              <time datetime="2021-11-24T20:00:00">Aug 11</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--attachment"
-                ><i class="fas fa-paperclip"></i
-              ></span>
-              <b>Andrea </b>uploaded 3 documents
-              <time datetime="2021-11-24T20:00:00">Aug 11</time>
-            </li>
-            <li>
-              <span class="task-icon task-icon--comment"
-                ><i class="fas fa-comment"></i
-              ></span>
-              <b>Karen </b> left a comment
-              <time datetime="2021-11-24T20:00:00">Aug 12</time>
-            </li>
+            {% endfor %}
           </ul>
         </div>
       </aside>
     </div>
 
+    <div id="user-list-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Select a User</h2>
+        <ul id="user-list">
+          <!-- Users will be populated here -->
+        </ul>
+      </div>
+    </div>
     <!-- Link to your JS file -->
     <script src="{{ url_for('static', filename='js/back.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
-
+    <script
+      src="https://kit.fontawesome.com/222ce92a0b.js"
+      crossorigin="anonymous"
+    ></script>
     <!-- Add any other script tags as needed -->
   </body>
 </html>
