@@ -6,7 +6,7 @@ from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:admin@localhost/your_database_name'  # Replace with your database connection details
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:admin@localhost/your_database_name' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
