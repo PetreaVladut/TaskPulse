@@ -4,7 +4,7 @@
             "deadline": "2023-12-31",
             "description": "Sample task 1",
             "difficulty": "Easy",
-            "status": "In Progress",
+            "status": "Needs Review",
             "tags": "Tag1,Tag2",
             "task_id": 1,
             "title": "Task 1",
@@ -24,17 +24,17 @@
             "deadline": "2023-12-20",
             "description": "Sample task 3",
             "difficulty": "Hard",
-            "status": "In Progress",
+            "status": "Done",
             "tags": "Tag4",
             "task_id": 3,
             "title": "Task 3",
-            "user_id": 3
+            "user_id": 0
         },
         {
             "deadline": "2023-11-30",
             "description": "Another task",
             "difficulty": "Easy",
-            "status": "In Progress",
+            "status": "Planned",
             "tags": "Tag5",
             "task_id": 4,
             "title": "Task 4",
@@ -54,7 +54,7 @@
             "deadline": "2023-12-05",
             "description": "Urgent task",
             "difficulty": "Hard",
-            "status": "Done",
+            "status": "Planned",
             "tags": "Tag7",
             "task_id": 6,
             "title": "Task 6",
@@ -64,7 +64,7 @@
             "deadline": "2023-11-25",
             "description": "Task for Bob",
             "difficulty": "Easy",
-            "status": "Done",
+            "status": "Needs Review",
             "tags": "Tag8",
             "task_id": 7,
             "title": "Task for Bob",
@@ -73,7 +73,7 @@
         {
             "description": "dawdwad",
             "difficulty": null,
-            "status": "Needs Review",
+            "status": "Done",
             "task_id": 8,
             "title": "dawdaw",
             "user_id": 0
@@ -82,21 +82,30 @@
             "deadline": "2023-12-27",
             "description": "Plan the development",
             "difficulty": "Easy",
-            "status": "In Progress",
+            "status": "Done",
             "task_id": 9,
             "title": "Task 5",
+            "user_id": 0
+        },
+        {
+            "deadline": "2024-01-24",
+            "description": "dawdwadad",
+            "difficulty": "Easy",
+            "status": "Planned",
+            "task_id": 10,
+            "title": "dawdada",
             "user_id": 0
         }
     ],
     "team": [
         {
             "description": "Sample team A",
-            "name": "Team A",
+            "name": "A",
             "team_id": 1
         },
         {
             "description": "Sample team B",
-            "name": "Team B",
+            "name": "B",
             "team_id": 2
         },
         {
@@ -162,18 +171,6 @@
     ],
     "user_team": [
         {
-            "team_id": 1,
-            "user_id": 2
-        },
-        {
-            "team_id": 2,
-            "user_id": 2
-        },
-        {
-            "team_id": 2,
-            "user_id": 3
-        },
-        {
             "team_id": 3,
             "user_id": 4
         },
@@ -191,11 +188,27 @@
         },
         {
             "team_id": 1,
-            "user_id": 3
+            "user_id": 7
+        },
+        {
+            "team_id": 1,
+            "user_id": 4
+        },
+        {
+            "team_id": 1,
+            "user_id": 6
         },
         {
             "team_id": 1,
             "user_id": 5
+        },
+        {
+            "team_id": 2,
+            "user_id": 4
+        },
+        {
+            "team_id": 2,
+            "user_id": 3
         }
     ]
 }

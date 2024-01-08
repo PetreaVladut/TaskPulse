@@ -601,3 +601,20 @@ background-color: #007bff; /* Adjust the hover color */
 .title{
   margin:20px;
 }
+
+.change-team{
+  text-align: center;
+}
+
+.change-team a{
+  color: inherit; /* Remove default text color */
+  text-decoration: none; /* Remove underline */
+  background-color: transparent; /* Remove any background */
+  font-size: inherit; /* Use the font size of the parent element */
+  font-family: inherit; /* Use the font family of the parent element */
+  font-weight: inherit; /* Use the font weight of the parent element */
+  line-height: inherit; /* Use the line height of the parent element */
+  border: none; /* Remove borders */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margins */
+}

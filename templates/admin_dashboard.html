@@ -1,350 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Management Dashboard</title>
 
-    <!-- Link to your CSS file -->
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/stiluri.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="path/to/font-awesome/css/font-awesome.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Management Dashboard</title>
 
-    <!-- Add any other meta tags or link tags as needed -->
-  </head>
-  <body>
-    <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
-    <div class="app">
-      <aside class="sidebar">
-        <h1 class="title">TaskPulse</h1>
-        <div class="profile-container">
-          <img
-            src="{{ url_for('static', filename=user_photo) }}"
-            alt="Profile Photo"
-            class="profile-image"
-          />
-          <div class="profile-info">
-            <h2>{{ user_name }}</h2>
-            <p>Email: {{ user_email }}</p>
-            <p>Team: {{ team[0].name }}</p>
-            <!-- <div class="experience-bar">
+  <!-- Link to your CSS file -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/stiluri.css') }}" />
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css" />
+
+  <!-- Add any other meta tags or link tags as needed -->
+</head>
+
+<body>
+  <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
+  <div class="app">
+    <aside class="sidebar">
+      <h1 class="title">TaskPulse</h1>
+      <div class="profile-container">
+        <img src="{{ url_for('static', filename=user_photo) }}" alt="Profile Photo" class="profile-image" />
+        <div class="profile-info">
+          <h2>{{ user_name }}</h2>
+          </br>
+          <p>Email: {{ user_email }}</p>
+          </br>
+          <p>Team: {{ current_team.name }}</p>
+          <p style="opacity:70%; font-size: small;">Description: {{ current_team.description }}</p>
+          </br>
+          <!-- <div class="experience-bar">
               <div class="experience-fill" style="width: 70%"></div>
                Adjust the width based on experience points
             </div>
               <div class="experience-label">Veteran: 70%</div> -->
-          </div>
         </div>
-        <!-- <button class="profile-button">Achievments</button> -->
-        <div class="team-members">
-          <h3>Team Members</h3>
-          {% for member in team_members %}
-          <div class="team-member">
-            {{ member.username }}<button
-              class="delete_member"
-              data-user-id="{{ member.user_id }}"
-              data-team-id="{{ team_id }}"
-            >
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-          {% endfor %}
-          <button
-            id="add-member-btn"
-            data-team-id="{{ team_id }}"
-            class="add-member"
-          >
-            +
+      </div>
+      <!-- <button class="profile-button">Achievments</button> -->
+      <div class="team-members">
+        <h3>Team Members</h3>
+        {% for member in team_members %}
+        <div class="team-member">
+          {{ member.username }}<button class="delete_member" data-user-id="{{ member.user_id }}"
+            data-team-id="{{ current_team.team_id }}">
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
-      </aside>
-      <main class="project">
-        <div class="project-info">
-          <h1>Homepage</h1>
-          <div class="project-participants">
-            <span></span>
-            <span></span>
-            <span></span>
-            <button class="project-participants__add">Add Team</button>
-          </div>
+        {% endfor %}
+        <button id="add-member-btn" data-team-id="{{ current_team.team_id }}" class="add-member">
+          +
+        </button>
+      </div>
+    </aside>
+    <main class="project">
+      <div class="project-info">
+        <h1>Homepage</h1>
+        <div class="project-participants">
+          {% if user_id == 0 %}
+          {% for team in team %}
+          <span class="change-team" data-team-id="{{team.team_id}}"><a href='{{team_list[loop.index0]}}'>{{team.team_id}}</a></span>
+          {% endfor %}
+          {% else %}
+          {% for team in team %}
+          {% if team.user_id == user_id %}
+          <span class="change-team" data-team-id="{{team.team_id}}">{{team.team_id}}</span>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          <button class="project-participants__add">Add Team</button>
         </div>
-        <div class="project-tasks">
-          <div class="project-column" data-status="Planned">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">Task Planned</h2>
-              <a href="/task/add" class="add-task-button">+</a>
-            </div>
-            {% for task in tasks['Planned'] %}
-            <div
-              class="task"
-              draggable="true"
-              data-task-id="{{ task.task_id }}"
-              data-task-status="{{ task.status }}"
-            >
-              <div class="task__tags">
-                <span class="task__tag task__tag--illustration"
-                  >{{ task.tag }}</span
-                >
-                <div class="task-options-container">
-                  <button class="task__options">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </button>
-                  <div class="dropdown-menu" style="display: none">
-                    <button
-                      class="dropdown-item"
-                      id="dropdown-item-edit"
-                      data-task-id="{{ task.task_id }}">
-                      <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
-                    </button>
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
-                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <div class="task__stats">
-                <span
-                  ><time datetime="2021-11-24T20:00:00"
-                    ><i class="fas fa-flag"></i>Nov 24</time
-                  ></span
-                >
-                <span>{{ users[task.user_id].username }}</span>
-                <div class="task__owner">
-                  {% if task.user_id == 0 %}
-                  <button
-                    class="assign-button"
-                    data-task-id="{{ task.task_id }}"
-                    asignee="{{username}}"
-                  >
-                    +
-                  </button>
-                  {% elif task.user_id in users %}
-                  <img
-                    src="{{ url_for('static', filename=users[task.user_id].image) }}"
-                  />
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+      </div>
+      <div class="project-tasks">
+        <div class="project-column" data-status="Planned">
+          <div class="project-column-heading">
+            <h2 class="project-column-heading__title">Task Planned</h2>
+            <a href="/task/add" class="add-task-button">+</a>
           </div>
-          <div class="project-column" data-status="In Progress">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">In Progress</h2>
-              <a href="/task/add" class="add-task-button">+</a>
-            </div>
-
-            {% for task in tasks['In Progress'] %}
-            <div
-              class="task"
-              draggable="true"
-              data-task-id="{{ task.task_id }}"
-              data-task-status="{{ task.status }}"
-            >
-              <div class="task__tags">
-                <span class="task__tag task__tag--illustration"
-                  >Illustration
-                </span>
-                <div class="task-options-container">
-                  <button class="task__options">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </button>
-                  <div class="dropdown-menu" style="display: none">
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
+          {% for task in tasks['Planned'] %}
+          <div class="task" draggable="true" data-task-id="{{ task.task_id }}" data-task-status="{{ task.status }}">
+            <div class="task__tags">
+              <span class="task__tag task__tag--illustration">{{ task.tag }}</span>
+              <div class="task-options-container">
+                <button class="task__options">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="dropdown-item" id="dropdown-item-edit" data-task-id="{{ task.task_id }}">
                     <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
-                    </button>
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
-                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <div class="task__stats">
-                <span
-                  ><time datetime="2021-11-24T20:00:00"
-                    ><i class="fas fa-flag"></i>Nov 24</time
-                  ></span
-                >
-                <span>{{ users[task.user_id].username }}</span>
-                <div class="task__owner">
-                  {% if task.user_id == 0 %}
-                  <button
-                    class="assign-button"
-                    data-task-id="{{ task.task_id }}"
-                  >
-                    +
                   </button>
-                  {% elif task.user_id in users %}
-                  <img
-                    src="{{ url_for('static', filename=users[task.user_id].image) }}"
-                  />
-                  {% endif %}
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                  </button>
                 </div>
               </div>
             </div>
-            {% endfor %}
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <div class="task__stats">
+              <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
+              <span>{{ users[task.user_id].username }}</span>
+              <div class="task__owner">
+                {% if task.user_id == 0 %}
+                <button class="assign-button" data-task-id="{{ task.task_id }}" asignee="{{username}}">
+                  +
+                </button>
+                {% elif task.user_id in users %}
+                <img src="{{ url_for('static', filename=users[task.user_id].image) }}" />
+                {% endif %}
+              </div>
+            </div>
           </div>
-          <div class="project-column" data-status="Needs Review">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">Needs Review</h2>
-              <a href="/task/add" class="add-task-button">+</a>
-            </div>
-
-            {% for task in tasks['Needs Review'] %}
-            <div
-              class="task"
-              draggable="true"
-              data-task-id="{{ task.task_id }}"
-              data-task-status="{{ task.status }}"
-            >
-              <div class="task__tags">
-                <span class="task__tag task__tag--illustration"
-                  >Illustration</span
-                ><div class="task-options-container">
-                  <button class="task__options">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </button>
-                  <div class="dropdown-menu" style="display: none">
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
-                    <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
-                    </button>
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
-                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <div class="task__stats">
-                <span
-                  ><time datetime="2021-11-24T20:00:00"
-                    ><i class="fas fa-flag"></i>Nov 24</time
-                  ></span
-                >
-                <span>{{ users[task.user_id].username }}</span>
-                <div class="task__owner">
-                  {% if task.user_id == 0 %}
-                  <button
-                    class="assign-button"
-                    data-task-id="{{ task.task_id }}"
-                  >
-                    +
-                  </button>
-                  {% elif task.user_id in users %}
-                  <img
-                    src="{{ url_for('static', filename=users[task.user_id].image) }}"
-                  />
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+          {% endfor %}
+        </div>
+        <div class="project-column" data-status="In Progress">
+          <div class="project-column-heading">
+            <h2 class="project-column-heading__title">In Progress</h2>
+            <a href="/task/add" class="add-task-button">+</a>
           </div>
-          <div class="project-column" data-status="Done">
-            <div class="project-column-heading">
-              <h2 class="project-column-heading__title">Done</h2>
-              <a href="/task/add" class="add-task-button">+</a>
-            </div>
 
-            {% for task in tasks['Done'] %}
-            <div
-              class="task"
-              draggable="true"
-              data-task-id="{{ task.task_id }}"
-              data-task-status="{{ task.status }}"
-            >
-              <div class="task__tags">
-                <span class="task__tag task__tag--illustration"
-                  >Illustration</span
-                ><div class="task-options-container">
-                  <button class="task__options">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </button>
-                  <div class="dropdown-menu" style="display: none">
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
+          {% for task in tasks['In Progress'] %}
+          <div class="task" draggable="true" data-task-id="{{ task.task_id }}" data-task-status="{{ task.status }}">
+            <div class="task__tags">
+              <span class="task__tag task__tag--illustration">Illustration
+              </span>
+              <div class="task-options-container">
+                <button class="task__options">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
                     <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
-                    </button>
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
+                  </button>
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
                     <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
-                    </button>
-                    <button
-                      class="dropdown-item"
-                      data-task-id="{{ task.task_id }}"
-                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <div class="task__stats">
+              <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
+              <span>{{ users[task.user_id].username }}</span>
+              <div class="task__owner">
+                {% if task.user_id == 0 %}
+                <button class="assign-button" data-task-id="{{ task.task_id }}">
+                  +
+                </button>
+                {% elif task.user_id in users %}
+                <img src="{{ url_for('static', filename=users[task.user_id].image) }}" />
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="project-column" data-status="Needs Review">
+          <div class="project-column-heading">
+            <h2 class="project-column-heading__title">Needs Review</h2>
+            <a href="/task/add" class="add-task-button">+</a>
+          </div>
+
+          {% for task in tasks['Needs Review'] %}
+          <div class="task" draggable="true" data-task-id="{{ task.task_id }}" data-task-status="{{ task.status }}">
+            <div class="task__tags">
+              <span class="task__tag task__tag--illustration">Illustration</span>
+              <div class="task-options-container">
+                <button class="task__options">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
+                    <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
+                  </button>
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <div class="task__stats">
+              <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
+              <span>{{ users[task.user_id].username }}</span>
+              <div class="task__owner">
+                {% if task.user_id == 0 %}
+                <button class="assign-button" data-task-id="{{ task.task_id }}">
+                  +
+                </button>
+                {% elif task.user_id in users %}
+                <img src="{{ url_for('static', filename=users[task.user_id].image) }}" />
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="project-column" data-status="Done">
+          <div class="project-column-heading">
+            <h2 class="project-column-heading__title">Done</h2>
+            <a href="/task/add" class="add-task-button">+</a>
+          </div>
+
+          {% for task in tasks['Done'] %}
+          <div class="task" draggable="true" data-task-id="{{ task.task_id }}" data-task-status="{{ task.status }}">
+            <div class="task__tags">
+              <span class="task__tag task__tag--illustration">Illustration</span>
+              <div class="task-options-container">
+                <button class="task__options">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
+                    <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a>
+                  </button>
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
+                    <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a>
+                  </button>
+                  <button class="dropdown-item" data-task-id="{{ task.task_id }}">
                     <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Validate</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <h3>{{ task.title }}</h3>
-              <p>{{ task.description }}</p>
-              <div class="task__stats">
-                <span
-                  ><time datetime="2021-11-24T20:00:00"
-                    ><i class="fas fa-flag"></i>Nov 24</time
-                  ></span
-                >
-                <span>{{ users[task.user_id].username }}</span>
-                <div class="task__owner">
-                  {% if task.user_id == 0 %}
-                  <button
-                    class="assign-button"
-                    data-task-id="{{ task.task_id }}"
-                  >
-                    +
                   </button>
-                  {% elif task.user_id in users %}
-                  <img
-                    src="{{ url_for('static', filename=users[task.user_id].image) }}"
-                  />
-                  {% endif %}
                 </div>
               </div>
             </div>
-            {% endfor %}
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <div class="task__stats">
+              <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
+              <span>{{ users[task.user_id].username }}</span>
+              <div class="task__owner">
+                {% if task.user_id == 0 %}
+                <button class="assign-button" data-task-id="{{ task.task_id }}">
+                  +
+                </button>
+                {% elif task.user_id in users %}
+                <img src="{{ url_for('static', filename=users[task.user_id].image) }}" />
+                {% endif %}
+              </div>
+            </div>
           </div>
+          {% endfor %}
         </div>
-      </main>
-      <aside class="task-details">
-        <!-- <div class="tag-progress">
+      </div>
+    </main>
+    <aside class="task-details">
+      <!-- <div class="tag-progress">
           <h2>Task Progress</h2>
           <div class="tag-progress">
             <p>Copywriting <span>3/8</span></p>
@@ -369,40 +271,36 @@
             </progress>
           </div>
         </div> -->
-        <div class="task-activity">
-          <h2>Recent Activity</h2>
-          <ul>
-            {% for log in logs %}
-            <li>
-              <span class="task-icon task-icon--attachment"
-                ><i class="fas fa-paperclip"></i
-              ></span>
-              <span id="timestamp">{{ log.timestamp }}</span>
-              <span>: {{ log.description }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </aside>
-    </div>
-
-    <div id="user-list-modal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Select a User</h2>
-        <ul id="user-list">
-          <!-- Users will be populated here -->
+      <div class="task-activity">
+        <h2>Recent Activity</h2>
+        <ul>
+          {% for log in logs %}
+          <li>
+            <span class="task-icon task-icon--attachment"><i class="fas fa-paperclip"></i></span>
+            <span id="timestamp">{{ log.timestamp }}</span>
+            <span>: {{ log.description }}</span>
+          </li>
+          {% endfor %}
         </ul>
       </div>
+    </aside>
+  </div>
+
+  <div id="user-list-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Select a User</h2>
+      <ul id="user-list">
+        <!-- Users will be populated here -->
+      </ul>
     </div>
-    <!-- Link to your JS file -->
-    <script src="{{ url_for('static', filename='js/back.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
-    <script
-      src="https://kit.fontawesome.com/222ce92a0b.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- Add any other script tags as needed -->
-  </body>
+  </div>
+  <!-- Link to your JS file -->
+  <script src="{{ url_for('static', filename='js/back.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+  <script src="https://kit.fontawesome.com/222ce92a0b.js" crossorigin="anonymous"></script>
+  <!-- Add any other script tags as needed -->
+</body>
+
 </html>

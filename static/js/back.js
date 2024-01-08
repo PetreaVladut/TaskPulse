@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => response.json())
           .then((data) => {
             if (data.status === "success") {
+              window.location.reload();
              // alert("Member added to team successfully");
               // Update the UI here if necessary
             } else {
@@ -164,46 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  const addUserButton = document.getElementById("add-member-btn");
-  const modal = document.getElementById("user-list-modal");
-  const closeModal = document.getElementsByClassName("close")[0];
-
-  addUserButton.addEventListener("click", function () {
-    // Clear current list
-    document.getElementById("user-list").innerHTML = "";
-
-    // Assuming 'users' is the variable containing user data passed from Flask
-    users.forEach((user) => {
-      let li = document.createElement("li");
-      li.innerText = user.username;
-      li.setAttribute("data-user-id", user.user_id);
-      // Add click event to li to handle user selection
-      li.addEventListener("click", function () {
-        handleUserSelection(user.user_id);
-      });
-      document.getElementById("user-list").appendChild(li);
-    });
-
-    modal.style.display = "block";
-  });
-
-  closeModal.addEventListener("click", function () {
-    modal.style.display = "none";
-  });
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-
-  function handleUserSelection(userId) {
-    // Handle the user selection (e.g., make a fetch request to add the user to a team)
-    console.log("User Selected:", userId);
-    modal.style.display = "none";
-  }
-});
 
 document.querySelector(".task__options").addEventListener("click", function () {
   document.querySelector(".dropdown-content").classList.toggle("show");
@@ -225,6 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => response.json())
         .then((data) => {
           if (data.status === "success") {
+            window.location.reload();
            // alert("Member removed successfully");
             // Optionally, update the UI here to reflect the change
           } else {
@@ -261,3 +223,40 @@ function deleteTask() {
   // Implement task deletion logic
  // alert("Delete task clicked");
 }
+
+/* function changeTeamClick(event) {
+  // Get the team ID from the data attribute
+  let teamId = event.target.getAttribute('data-team-id');
+
+  // Call the route with the team ID (modify the URL as needed)
+  fetch(`/change_team/${teamId}`, {
+      method: 'POST', // You can use 'POST' if needed
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      // Add any request body data if needed
+      body: JSON.stringify({ teamId: teamId })
+  })
+  .then(response => {
+      if (response.ok) {
+          // Handle a successful response here
+          console.log('Team changed successfully.');
+      } else {
+          // Handle errors or other responses here
+          console.error('Error changing team.');
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+
+}
+document.addEventListener("DOMContentLoaded", function() {
+    // Your JavaScript code here
+
+// Assign the click event to elements with class 'change-team'
+const changeTeamButtons = document.querySelectorAll('.change-team');
+changeTeamButtons.forEach(button => {
+  button.addEventListener('click', changeTeamClick);
+});
+}); */

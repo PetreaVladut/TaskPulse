@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from jinja2.exceptions import TemplateError
 from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash
+from flask import make_response
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:admin@localhost/your_database_name' 
@@ -11,6 +13,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 app.secret_key = 'your_secret_key'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+@app.after_request
+def add_cache_headers(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 def load_users():
     with open('users.json', 'r') as file:
@@ -61,7 +70,8 @@ def login():
             if session.get('admin'):
                 print("da,nene")
                 print(session.get('admin'))
-                return redirect(url_for('admin_dashboard',user_email=email, name=name,user_photo=image) ) # Redirect to the dashboard after successful login
+                current_team=users_data['team'][2]
+                return redirect(url_for('admin_dashboard',user_email=email, name=name,user_photo=image,current_team=current_team) ) # Redirect to the dashboard after successful login
             else:
                 return redirect(url_for('dashboard',user_email=email, name=name,user_photo=image) ) # Redirect to the dashboard after successful login
         error_message = "Invalid credentials. Please try again."
@@ -90,7 +100,8 @@ def login1():
         if session.get('admin'):
             print("da,nene")
             print(session.get('admin'))
-            return redirect(url_for('admin_dashboard',user_email=username, name=name,user_photo=image) ) # Redirect to the dashboard after successful login
+            current_team=users_data['team'][3]
+            return redirect(url_for('admin_dashboard',user_email=username, name=name,user_photo=image,current_team=current_team) ) # Redirect to the dashboard after successful login
         else:
             return redirect(url_for('dashboard',user_email=username, name=name,user_photo=image) ) # Redirect to the dashboard after successful login
     
@@ -195,34 +206,54 @@ def admin_dashboard():
     user_email = request.args.get('user_email')
     user_name = request.args.get('name')
     user_photo = request.args.get('user_photo')
+    team_str = request.args.get('current_team')
+    print(team_str)
     data = load_data()
-
-    tasks = {
-        'Planned': [task for task in data['task'] if task['status'] == 'Planned'],
-        'In Progress': [task for task in data['task'] if task['status'] == 'In Progress'],
-        'Needs Review': [task for task in data['task'] if task['status'] == 'Needs Review'],
-        'Done': [task for task in data['task'] if task['status'] == 'Done']
-    }
-
+    user_id ={user['user_id'] for user in data['user']}
     users = {user['user_id']: user for user in data['user']}
     team = data['team']
     user_team = data['user_team']
 
     team_members = {}
-
+    current_team={}
+    current_team=eval(team_str)
+    print(current_team)
     # Get current user's team based on their email
     current_user = next((user for user in users.values() if user['email'] == user_email), None)
     if current_user:
         user_id = current_user['user_id']
-        current_team_id = next((ut['team_id'] for ut in user_team if ut['user_id'] == user_id), None)
-
-        if current_team_id:
+        if current_team:
             # Get all users in the current team
-            team_members = [users[ut['user_id']] for ut in user_team if ut['team_id'] == current_team_id]
+            team_members = [users[ut['user_id']] for ut in user_team if ut['team_id'] == current_team['team_id']]
         else:
-            current_team_id=1
-            team_members = [users[ut['user_id']] for ut in user_team if ut['team_id'] == current_team_id]
+            #current_team=data['team'][0]
+            team_members = [users[ut['user_id']] for ut in user_team if ut['team_id'] == current_team['team_id']]
+    lista=[0]
+    print(user_id)
+    for i in team_members:
+        lista.append(i['user_id'])
+    tasks = {
+        'Planned': [task for task in data['task'] if task['status'] == 'Planned' and lista.count(task['user_id'])>0],
+        'In Progress': [task for task in data['task'] if task['status'] == 'In Progress' and lista.count(task['user_id'])>0],
+        'Needs Review': [task for task in data['task'] if task['status'] == 'Needs Review' and lista.count(task['user_id'])>0],
+        'Done': [task for task in data['task'] if task['status'] == 'Done' and lista.count(task['user_id'])>0]
+    }
     recent_activity=get_recent_activities()
+    recent_activity = recent_activity[-5:][::-1]
+    print('grrr')
+    print(current_team)
+    team_list=[]
+    for team1 in data['team']:
+        team_list.append(url_for('admin_dashboard',tasks=tasks, 
+                           users=users, 
+                           user_email=user_email, 
+                           user_name=user_name, 
+                           user_photo=user_photo,
+                           team=team, 
+                           team_members=team_members,
+                           current_team=team1,
+                           logs=recent_activity,
+                           user_id=user_id))
     return render_template('admin_dashboard.html', 
                            tasks=tasks, 
                            users=users, 
@@ -230,7 +261,10 @@ def admin_dashboard():
                            user_name=user_name, 
                            user_photo=user_photo,
                            team=team, 
-                           team_members=team_members,team_id=current_team_id,logs=recent_activity)
+                           team_members=team_members,
+                           current_team=current_team,
+                           logs=recent_activity,
+                           user_id=user_id, team_list=team_list)
 
 @app.route('/task/add', methods=['GET', 'POST'])
 def add_task():
@@ -325,8 +359,14 @@ def update_task_status():
             if task['task_id'] == task_id:
                 task['status'] = new_status  # Update the task's status
                 save_data(all_data)  # Save the updated data back to the JSON file
-                return jsonify({'status': 'success', 'message': 'Task updated successfully'})
-
+        print('plm')
+        task_name=[task for task in all_data['task'] if task['task_id']==task_id]
+        print('plm')
+        activity = {
+        'description': f'Task {task_name[0]["title"]} was updated by {session.get("username")} to {new_status}',
+        'timestamp': (datetime.fromisoformat(datetime.now().isoformat())).strftime("%B %d, %Y %H:%M:%S")
+         }
+        append_recent_activity(activity)
         return jsonify({'status': 'error', 'message': 'Task not found'})
 
     except Exception as e:
@@ -353,10 +393,12 @@ def delete_member(user_id, team_id):
     print('da')
     data = load_data()
     user_team = data['user_team']
-
+    tasks=data['task']
     # Find and remove the user from the team
     user_team[:] = [ut for ut in user_team if not (ut['user_id'] == user_id and ut['team_id'] == team_id)]
-
+    for task in tasks:
+        if task['user_id']==user_id:
+            task['user_id']=0
     # Save the updated data
     save_data(data)
     return jsonify({'status': 'success', 'message': 'Member removed successfully'})
@@ -365,6 +407,41 @@ def delete_member(user_id, team_id):
 def reload_page():
     # You can redirect to the same page or a different page by changing the URL in url_for
     return redirect(url_for('admin_dashboard'))
+
+
+def url_formation_team_change():
+    return 0
+
+
+@app.route('/change_team/<int:teamId>',methods=['GET', 'POST'])
+def change_team(teamId):
+    print('uiiiii')
+    username = session.get('email')
+    password = session.get('password')
+    session['admin']=False
+    if authenticate_user(username, password):
+        #session['user'] = username  # Create a session for the logged-in user
+        users_data = load_data()
+        users_list = users_data['user']
+        name='admin'
+        image='images/profile2.jpg'
+        for user_dict in users_list:
+            if user_dict['email'] == username:
+        # Found the user, return their image and username
+                name = user_dict.get('username', '')
+                image = user_dict.get('image', 'profile2.jpg')  # Replace with your image field name
+                print(name)
+                print(image)
+        if session.get('admin'):
+            print("da,nene")
+            print(session.get('admin'))
+            current_team=users_data['team'][teamId-1]
+            print(current_team)
+            return redirect(url_for('admin_dashboard',user_email=username, name=name,user_photo=image,current_team=current_team) ) # Redirect to the dashboard after successful login
+        else:
+            return redirect(url_for('dashboard',user_email=username, name=name,user_photo=image) ) # Redirect to the dashboard after successful login
+
+
 
 @app.route('/add-member-to-team', methods=['POST'])
 def add_member_to_team():
